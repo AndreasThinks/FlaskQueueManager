@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="tasks_list"></div>
+        <ul>
+{% for key in tasks %}
+<li>{{key}} . {{tasks[key]}}</li>
+        </ul>
+{% endfor %}
+{% endblock %}
