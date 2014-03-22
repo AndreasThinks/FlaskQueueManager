@@ -42,7 +42,7 @@ def add_task():
         name = tasker[1]
         task = Task(number= t_number, creator=235026, time = 20)
     except KeyError:
-        task = Task(number= 10, creator=000000, time = 20)
+        task = Task(number= 15, creator=200000, time = 20)
     db.session.add(task)
     db.session.commit()
     return redirect('/index')
