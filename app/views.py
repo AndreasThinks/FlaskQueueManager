@@ -6,8 +6,6 @@ from models import User, Task
 
 
 @app.route('/')
-
-
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     form = AddTask()
@@ -42,7 +40,7 @@ def add_task():
         name = tasker[1]
         task = Task(number= t_number, creator=235026, time = 20)
     except KeyError:
-        task = Task(number= 15, creator=200000, time = 20)
+        task = Task(creator=200000, time = 20)
     db.session.add(task)
     db.session.commit()
     return redirect('/index')

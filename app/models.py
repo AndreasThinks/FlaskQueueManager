@@ -13,7 +13,7 @@ class User(db.Model):
         return unicode(self.id)
 
 class Task(db.Model):
-    number = db.Column(db.String(7), primary_key = True)
+    id = db.Column(db.BigInteger, primary_key = True)
     creator = db.Column(db.String(120), db.ForeignKey('user.id'))
     time = db.Column(db.SmallInteger)
 
