@@ -23,22 +23,26 @@ def index():
     #tasks = {1: 'passport', 2: 'eat', 3: 'Amazing'}
     tasks = {}
     all_tasks = Task.query.all()
+    task_no = len(all_tasks) - 1
     i = 0
     for ta in all_tasks:
         new_dict = {i : ta.creator}
         i += 1
         tasks.update(new_dict)
+    task_no_type = task_types_dict[all_tasks[len(all_tasks)-1].type]
 
-    if form.validate_on_submit():
-        session['new_task'] = [i, form.name.data]
+    #if form.validate_on_submit():
+     #   session['new_task'] = [i, form.name.data]
         #task = Task(number=i, creator=235026, time = 20)
         #db.session.add(task)
         #db.session.commit()
         #return redirect('/index')
-        return redirect('/add_task')
+      #  return redirect('/add_task')
     return render_template("index.html",
         title = 'Home',
         user = user,
+        task_no = task_no,
+        task_no_type = task_no_type,
         form = form,
         task_types = task_types_dict,
         tasks = tasks)
