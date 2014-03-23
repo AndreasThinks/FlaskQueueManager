@@ -8,10 +8,17 @@
 
 {% endfor %}
             </div>
+             {% for type in task_types %}
+             <div class="task_type_button">
 
+
+                  <a href={{url_for('add_task_type', task_type=type)}}>{{task_types[type]}}</a>
+             </div>
+            {% endfor %}
+<br>
             <div id="buttons">
             Finish Task<br>
-            <form action="/add_task" method="post" name="addTask">
+            <form action="." method="post" name="addTask">
         Add New Task:
         {{form.name(size=80)}}
 

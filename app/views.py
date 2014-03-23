@@ -9,6 +9,13 @@ from models import User, Task
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     form = AddTask()
+    task_types = ["Penalty Ticket", "Found Property", "Crime Reporting","Lost Property", "Break"]
+    x = 0
+    task_types_dict = {}
+    for task in task_types:
+        new_dict = {x : task}
+        task_types_dict.update(new_dict)
+        x += 1
     user = { 'nickname': 'Dan'}  # fake user
     #tasks = {1: 'passport', 2: 'eat', 3: 'Amazing'}
     tasks = {}
@@ -30,6 +37,7 @@ def index():
         title = 'Home',
         user = user,
         form = form,
+        task_types = task_types_dict,
         tasks = tasks)
 
 @app.route('/add_task', methods=['GET', 'POST'])
@@ -40,7 +48,16 @@ def add_task():
         name = tasker[1]
         task = Task(number= t_number, creator=235026, time = 20)
     except KeyError:
-        task = Task(creator=200000, time = 20)
+        task = Task(creator=200000, time=20)
     db.session.add(task)
+    db.session.commit()
+    return redirect('/index')
+
+@app.route('/add_task_type', methods=['GET', 'POST'])
+def add_task_type():
+    all_tasks = Task.query.all()
+    number = len(all_tasks)
+    task_db = Task(id = number, type=task_type, creator = 235026, time=20)
+    db.session.add(task_db)
     db.session.commit()
     return redirect('/index')

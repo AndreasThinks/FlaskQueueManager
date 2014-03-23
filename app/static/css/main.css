@@ -35,3 +35,9 @@ padding:10px;
     border-color: #332cf5;
 }
 
+div.task_type_button {
+    border-style: solid;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
