@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="current task list">
+    Please see the list of current task types below
+    <ul>
+    {% for type in task_types %}
+{{type}}
+</ul><br>
+{% endfor %}
+</div>
+
+<form action="types_admin" method="POST" name="addType">
+        Add New Type:
+        {{form.type(size=80)}}
+
+    <input type="submit" value="Add">
+</form>
+
+
+{% endblock %}

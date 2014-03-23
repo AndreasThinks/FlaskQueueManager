@@ -8,3 +8,10 @@ class LoginForm(Form):
 
 class AddTask(Form):
     name = TextField('name', validators = [Required()])
+
+class AddType(Form):
+    type = TextField('type', validators = [Required()])
+
+    def __init__(self, *args, **kwargs):
+        kwargs['csrf_enabled'] = False
+        super(AddType, self).__init__(*args, **kwargs)

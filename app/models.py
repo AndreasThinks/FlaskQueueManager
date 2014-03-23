@@ -20,3 +20,9 @@ class Task(db.Model):
 
     def __repr__(self):
         return '<Task %r>' % (self.number)
+
+class Types(db.Model):
+    type = db.Column(db.String, primary_key = True)
+
+    def __repr__(self):
+        return '<Type %r>' % (self.type)

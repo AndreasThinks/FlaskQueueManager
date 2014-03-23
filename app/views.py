@@ -1,7 +1,7 @@
 from flask import render_template, session, redirect
 from app import app, db
-from forms import LoginForm, AddTask
-from models import User, Task
+from forms import LoginForm, AddTask, AddType
+from models import User, Task, Types
 
 
 
@@ -9,7 +9,10 @@ from models import User, Task
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     form = AddTask()
-    task_types = ["Penalty Ticket", "Found Property", "Crime Reporting","Lost Property", "Break"]
+    all_types = Types.query.all()
+    task_types = []
+    for item in all_types:
+        task_types.append(item.type)
     x = 0
     task_types_dict = {}
     for task in task_types:
@@ -61,3 +64,23 @@ def add_task_type():
     db.session.add(task_db)
     db.session.commit()
     return redirect('/index')
+
+@app.route('/types_admin', methods=['GET', 'POST'])
+def types_admin():
+    form = AddType()
+    user = { 'nickname': 'Dan'}  # fake user
+    all_types = Types.query.all()
+    task_types = []
+    for item in all_types:
+        task_types.append(item.type)
+    if form.validate_on_submit():
+        type_data = form.type.data
+        type_db = Types(type=type_data)
+        db.session.add(type_db)
+        db.session.commit()
+        return redirect('/types_admin')
+
+    return render_template("types_admin.html",
+                           task_types = task_types,
+                           user = user,
+                           form=form)
