@@ -1,4 +1,4 @@
-from flask import render_template, session, redirect
+from flask import render_template, session, redirect, request
 from app import app, db
 from forms import LoginForm, AddTask, AddType
 from models import User, Task, Types
@@ -59,9 +59,10 @@ def add_task():
 @app.route('/add_task_type', methods=['GET', 'POST'])
 def add_task_type():
     all_tasks = Task.query.all()
+    task_type = int(request.args.get("task_type"))
     number = len(all_tasks)
-    task_db = Task(id = number, type=task_type, creator = 235026, time=20)
-    db.session.add(task_db)
+    task_to_db = Task(id=number, type=task_type, user_id=235026, time=20)
+    db.session.add(task_to_db)
     db.session.commit()
     return redirect('/index')
 
