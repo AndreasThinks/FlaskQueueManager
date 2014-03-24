@@ -16,13 +16,25 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     type = db.Column(db.Integer)
     user_id = db.Column(db.String(120), db.ForeignKey('user.id'))
-    time = db.Column(db.SmallInteger)
+    start_day = db.Column(db.Integer)
+    start_month = db.Column(db.Integer)
+    start_year = db.Column(db.Integer)
+    start_hour = db.Column(db.Integer)
+    start_minute = db.Column(db.Integer)
+    end_day = db.Column(db.Integer)
+    end_month = db.Column(db.Integer)
+    end_year = db.Column(db.Integer)
+    end_hour = db.Column(db.Integer)
+    end_minute = db.Column(db.Integer)
+    time_taken = db.Column(db.SmallInteger)
+
 
     def __repr__(self):
         return '<Task %r>' % (self.number)
 
 class Types(db.Model):
     type = db.Column(db.String, primary_key = True)
+    number = db.Column(db.Integer)
 
     def __repr__(self):
         return '<Type %r>' % (self.type)

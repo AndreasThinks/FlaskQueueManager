@@ -2,8 +2,11 @@
 {% block content %}
          <div id="page_content">
         <div id="tasks_list">
-
+             {% if task_no == None %}
+Click on a task type to begin
+            {% else %}
 Currently working on task number {{task_no}} - {{task_no_type}}
+            {% endif %}
             </div>
              {% for type in task_types %}
              <div class="task_type_button">

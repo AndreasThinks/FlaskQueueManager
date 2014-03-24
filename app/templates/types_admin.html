@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <div id="current task list">
-    Please see the list of current task types below
+    Please see the list of current task types below<br>
     <ul>
     {% for type in task_types %}
-{{type}}
+<li>{{type}}</li>
 </ul><br>
 {% endfor %}
+    <br>
 </div>
 
 <form action="types_admin" method="POST" name="addType">
