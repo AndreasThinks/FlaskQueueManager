@@ -5,7 +5,7 @@
              {% if task_no == None %}
 Click on a task type to begin
             {% else %}
-Currently working on task number {{task_no}} - {{task_no_type}}
+Currently working on task number {{task_no}} - {{task_no_type}}, started at {{start_hour}}:{{start_minute}}
             {% endif %}
             </div>
              {% for type in task_types %}

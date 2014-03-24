@@ -30,7 +30,7 @@ class Task(db.Model):
 
 
     def __repr__(self):
-        return '<Task %r>' % (self.number)
+        return '<Task %r>' % (self.id)
 
 class Types(db.Model):
     type = db.Column(db.String, primary_key = True)

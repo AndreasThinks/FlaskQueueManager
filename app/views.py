@@ -1,4 +1,4 @@
-from flask import render_template, session, redirect, request
+from flask import render_template, session, redirect, request, flash
 from app import app, db
 from forms import LoginForm, AddTask, AddType
 from models import User, Task, Types
@@ -27,6 +27,14 @@ def index():
     if len(all_tasks) > 0:
         task_no = len(all_tasks) - 1
         task_no_type = task_types_dict[all_tasks[len(all_tasks)-1].type]
+        previous_no = int(len(all_tasks) - 2)
+        previous_task = Task.query.get(previous_no)
+        start_hour = str(previous_task.end_hour)
+        if len(start_hour) == 1:
+            start_hour = "0" + start_hour
+        start_minute = str(previous_task.end_minute)
+        if len(start_minute) == 1:
+            start_minute = "0" + start_minute
     else:
         task_no = None
         task_no_type = None
@@ -51,7 +59,9 @@ def index():
         task_no_type = task_no_type,
         form = form,
         task_types = task_types_dict,
-        tasks = tasks)
+        tasks = tasks,
+        start_hour=start_hour,
+        start_minute=start_minute)
 
 @app.route('/add_task', methods=['GET', 'POST'])
 def add_task():
@@ -89,7 +99,6 @@ def add_task_type():
                 previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute
             else:
                 previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute + (60 * ((current_time.hour - previous_task.start_hour) - 1))
-        db.session.add(
         if previous_task.end_day == current_time.day:
             if previous_task.start_hour == current_time.hour:
                 previous_task.time_taken = current_time.minute - previous_task.start_minute
