@@ -1,15 +1,43 @@
-from flask import render_template, session, redirect, request, flash
+from flask import render_template, session, redirect, request, flash, url_for
 from app import app, db
 from forms import LoginForm, AddTask, AddType
 from models import User, Task, Types
 import datetime
+import flask_login
+from flask_login import login_required, logout_user
 
 
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.get(userid)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect('/index')
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    user = { 'nickname': 'Dan'}  # fake user
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        if User.query.get(username).password == password:
+            flask_login.login_user(User.query.get(username))
+            flash("Logged in successfully.")
+            return redirect(url_for("index"))
+    return render_template("login.html", form=form, user=user)
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     form = AddTask()
+    current_user = flask_login.current_user
     all_types = Types.query.all()
     task_types = []
     for item in all_types:
@@ -24,7 +52,9 @@ def index():
     #tasks = {1: 'passport', 2: 'eat', 3: 'Amazing'}
     tasks = {}
     all_tasks = Task.query.all()
-    if len(all_tasks) > 0:
+    start_hour = 0
+    start_minute = 0
+    if len(all_tasks) > 1:
         task_no = len(all_tasks) - 1
         task_no_type = task_types_dict[all_tasks[len(all_tasks)-1].type]
         previous_no = int(len(all_tasks) - 2)
@@ -59,6 +89,8 @@ def index():
         task_no_type = task_no_type,
         form = form,
         task_types = task_types_dict,
+        current_user=current_user,
+        anonymous=current_user.is_anonymous(),
         tasks = tasks,
         start_hour=start_hour,
         start_minute=start_minute)
@@ -78,11 +110,12 @@ def add_task():
 
 @app.route('/add_task_type', methods=['GET', 'POST'])
 def add_task_type():
+    current_user = flask_login.current_user.id
     current_time = datetime.datetime.now()
     all_tasks = Task.query.all()
     task_type = int(request.args.get("task_type"))
     number = len(all_tasks)
-    task_to_db = Task(id=number, type=task_type, user_id=235026, start_day=current_time.day, start_month=current_time.month, start_year=current_time.year, start_minute=current_time.minute
+    task_to_db = Task(id=number, type=task_type, user_id=current_user, start_day=current_time.day, start_month=current_time.month, start_year=current_time.year, start_minute=current_time.minute
     , start_hour=current_time.hour)
     db.session.add(task_to_db)
 

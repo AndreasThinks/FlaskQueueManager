@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+        Please enter your username and password to login
+<form method="POST" name="LoginForm">
+
+       Username: {{form.username(size=80)}}<br>
+       Password: {{form.password(size=80)}}<br>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}

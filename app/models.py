@@ -2,7 +2,6 @@ from app import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    email = db.Column(db.String(120), unique = True)
     password = db.Column(db.String(10))
     tasks = db.relationship('Task', backref = 'creator', lazy = 'dynamic')
 
@@ -11,6 +10,16 @@ class User(db.Model):
 
     def get_id(self):
         return unicode(self.id)
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key = True)

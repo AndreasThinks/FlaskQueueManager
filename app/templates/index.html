@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+        {% if anonymous == True %}
+        Please login to access this webpage
+        {% else %}
          <div id="page_content">
         <div id="tasks_list">
              {% if task_no == None %}
@@ -26,6 +29,7 @@ Currently working on task number {{task_no}} - {{task_no_type}}, started at {{st
 </form><br>
             Take a Break<br>
         </div></div> -->
+             {% endif %}
 
 
 {% endblock %}
