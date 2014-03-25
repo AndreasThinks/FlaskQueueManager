@@ -128,7 +128,9 @@ def add_task_type():
     all_tasks = Task.query.all()
     task_type = int(request.args.get("task_type"))
     number = len(all_tasks)
-    task_to_db = Task(id=number, type=task_type, user_id=current_user, start_day=current_time.day, start_month=current_time.month, start_year=current_time.year, start_minute=current_time.minute
+    type_object = Types.query.filter_by(number=task_type).first()
+    type_label = type_object.type
+    task_to_db = Task(id=number, type=task_type, type_label=type_label, user_id=current_user, start_day=current_time.day, start_month=current_time.month, start_year=current_time.year, start_minute=current_time.minute
     , start_hour=current_time.hour)
     db.session.add(task_to_db)
 
@@ -179,3 +181,11 @@ def types_admin():
                            task_types = task_types,
                            user = user,
                            form=form)
+
+@app.route('/remove_type', methods=['GET', 'POST'])
+def remove_type():
+    type_to_rm = request.args.get("type")
+    type_to_rm = Types.query.get(type_to_rm)
+    db.session.delete(type_to_rm)
+    db.session.commit()
+    return redirect('/types_admin')

@@ -24,6 +24,7 @@ class User(db.Model):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     type = db.Column(db.Integer)
+    type_label = db.Column(db.String)
     user_id = db.Column(db.String(120), db.ForeignKey('user.id'))
     start_day = db.Column(db.Integer)
     start_month = db.Column(db.Integer)

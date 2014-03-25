@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div id="current task list">
-    Please see the list of current task types below<br>
-    <ul>
-    {% for type in task_types %}
-<li>{{type}}</li>
-</ul><br>
-{% endfor %}
+    Please see the list of current task types below
+   <div id="task_type_container"> {% for type in task_types %}
+<div class="task_type">{{type}} <a href={{url_for('remove_type', type=type)}}>Remove?</a></div>
+{% endfor %}</div>
     <br>
 </div>
 
