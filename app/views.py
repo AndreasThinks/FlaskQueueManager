@@ -20,10 +20,23 @@ def logout():
     logout_user()
     return redirect('/index')
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        user = User(id=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+        flash("New User Registered")
+        return redirect(url_for('index'))
+    return render_template("register.html", form=form)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    user = { 'nickname': 'Dan'}  # fake user
     form = LoginForm()
+    user = flask_login.current_user
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
