@@ -1,6 +1,6 @@
 from flask import render_template, session, redirect, request, flash, url_for
 from app import app, db
-from forms import LoginForm, AddTask, AddType
+from forms import LoginForm, AddTask, AddType, ReportForm
 from models import User, Task, Types
 import datetime
 import flask_login
@@ -19,6 +19,11 @@ def load_user(userid):
 def logout():
     logout_user()
     return redirect('/index')
+
+@app.route("/report", methods=["GET", "POST"])
+def report():
+    form = ReportForm()
+    return render_template("report.html", form=form)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -61,15 +66,15 @@ def index():
         new_dict = {x : task}
         task_types_dict.update(new_dict)
         x += 1
-    user = { 'nickname': 'Dan'}  # fake user
-    #tasks = {1: 'passport', 2: 'eat', 3: 'Amazing'}
     tasks = {}
     all_tasks = Task.query.all()
     start_hour = 0
     start_minute = 0
     if len(all_tasks) > 1:
-        task_no = len(all_tasks) - 1
-        task_no_type = task_types_dict[all_tasks[len(all_tasks)-1].type]
+        #task_no = len(all_tasks) - 1
+        all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
+        task_no = len(all_tasks_user)
+        task_no_type = all_tasks_user[-1].type_label
         previous_no = int(len(all_tasks) - 2)
         previous_task = Task.query.get(previous_no)
         start_hour = str(previous_task.end_hour)
@@ -97,7 +102,6 @@ def index():
       #  return redirect('/add_task')
     return render_template("index.html",
         title = 'Home',
-        user = user,
         task_no = task_no,
         task_no_type = task_no_type,
         form = form,

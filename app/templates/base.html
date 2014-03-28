@@ -9,7 +9,7 @@
     <div id="logo"><h1>Queue Management System</h1></div>
     <p><a href={{url_for('index')}}>Home</a></p>
     <p><a href={{url_for('types_admin')}}>Change Task Types</a></p>
-    <p>Reports</p>
+    <p><a href={{url_for('report')}}>Generate Report</a></p>
     <p><a href={{url_for('logout')}}>Logout</a></p>
     <div id="user_box">{% if anonymous==False %}Current User: {{current_user.id}}
     {% else %}

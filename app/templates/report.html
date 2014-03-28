@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<p>Please select the dates during which you would like the report to be generated</p>
+
+<form action="index" method="POST" name="ReportForm">
+        Start Date:
+        Day {{form.day_from(size=2)}} - Month {{form.month_from(size=2)}} - Year {{form.year_from(size=4)}}
+    <br>
+        End Date:
+        Day {{form.day_to(size=2)}} - Month {{form.month_to(size=2)}} - Year {{form.year_to(size=4)}}
+
+    <br><input type="submit" value="Request Report">
+</form>
+
+
+{% endblock %}

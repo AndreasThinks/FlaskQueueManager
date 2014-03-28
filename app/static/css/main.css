@@ -48,3 +48,27 @@ div.task_type_button {
 }
 
 
+div.task_type a {
+    font-weight: bold;
+    color: #f02d2d;
+    font-size: 10px;
+    text-decoration: none;
+    font-variant: small-caps;
+    text-transform: uppercase;
+    margin-left: 30px;
+}
+
+div.task_type {
+    width: 350px;
+    border-style: solid;
+
+    border-color: #7d2ce8;
+    margin:0 auto;
+        margin-top: 10px;
+}
+
+#intro_bar {
+    background-color: #c2c0c2;
+    font-variant: small-caps;
+}
+
