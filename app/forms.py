@@ -21,12 +21,13 @@ class LoginForm(Form):
         super(LoginForm, self).__init__(*args, **kwargs)
 
 class ReportForm(Form):
-    day_from = IntegerField('Day From', validators = [Required(), length(2)])
-    month_from = IntegerField('Day From', validators = [Required(), length(2)])
-    year_from = IntegerField('Day From', validators = [Required(), length(4)])
-    day_to = IntegerField('Day From', validators = [Required(), length(2)])
-    month_to = IntegerField('Day From', validators = [Required(), length(2)])
-    year_to = IntegerField('Day From', validators = [Required(), length(4)])
+    day_from = IntegerField('Day From', validators = [Required()])
+    month_from = IntegerField('Day From', validators = [Required()])
+    year_from = IntegerField('Day From', validators = [Required()])
+    day_to = IntegerField('Day From', validators = [Required()])
+    month_to = IntegerField('Day From', validators = [Required()])
+    year_to = IntegerField('Day From', validators = [Required()])
+    user = IntegerField('User')
 
     def __init__(self, *args, **kwargs):
         kwargs['csrf_enabled'] = False

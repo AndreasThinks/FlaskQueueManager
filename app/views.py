@@ -23,6 +23,14 @@ def logout():
 @app.route("/report", methods=["GET", "POST"])
 def report():
     form = ReportForm()
+    if form.validate_on_submit():
+        tasks_returned = Task.query.all()
+
+        task_list = []
+        for task in tasks_returned:
+            task_attributes=[task.id, task.user_id, task.type_label,task.start_weekday, task.start_day, task.start_month, task.start_year, task.end_day, task.end_month, task.end_year, task.start_hour, task.start_minute, task.time_taken]
+            task_list.append(task_attributes)
+        return render_template("generated_report.html", task_list=task_list, tasks_returned=tasks_returned)
     return render_template("report.html", form=form)
 
 @app.route("/register", methods=["GET", "POST"])
@@ -31,7 +39,7 @@ def register():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        user = User(id=username, password=password)
+        user = User(id=username, password=password, role=0)
         db.session.add(user)
         db.session.commit()
         flash("New User Registered")
@@ -54,6 +62,11 @@ def login():
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    all_users = User.query.all()
+    if all_users == [] or None:
+        admin = User(id=222222, password='admin', role=1)
+        db.session.add(admin)
+        db.session.commit()
     form = AddTask()
     current_user = flask_login.current_user
     all_types = Types.query.all()
@@ -70,7 +83,7 @@ def index():
     all_tasks = Task.query.all()
     start_hour = 0
     start_minute = 0
-    if len(all_tasks) > 1:
+    if len(all_tasks) > 0:
         #task_no = len(all_tasks) - 1
         all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
         task_no = len(all_tasks_user)
@@ -134,7 +147,7 @@ def add_task_type():
     number = len(all_tasks)
     type_object = Types.query.filter_by(number=task_type).first()
     type_label = type_object.type
-    task_to_db = Task(id=number, type=task_type, type_label=type_label, user_id=current_user, start_day=current_time.day, start_month=current_time.month, start_year=current_time.year, start_minute=current_time.minute
+    task_to_db = Task(id=number, type=task_type, type_label=type_label, user_id=current_user, start_weekday=current_time.weekday(), start_day=current_time.day, start_month=current_time.month, start_year=current_time.year, start_minute=current_time.minute
     , start_hour=current_time.hour)
     db.session.add(task_to_db)
 

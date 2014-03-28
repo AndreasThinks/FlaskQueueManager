@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="report">
+<table border="1" >
+<tr >
+<th >Task ID</th><th>User ID</th><th >Type</th><th >Weekday</th><th >Start Day</th><th >Start Month</th><th >Start Year</th><th >End Day</th><th >End Month</th><th >End Year</th><th >Start Hour</th><th >Start Minute</th><th >Minutes Taken</th>
+</tr>
+
+    {% for task in task_list %}
+<tr>
+        {% for att in task %}
+<td >{{att}}</td>
+    {% endfor %}
+</tr>
+    {% endfor %}
+
+</table>
+    </div>
+
+{% endblock %}
