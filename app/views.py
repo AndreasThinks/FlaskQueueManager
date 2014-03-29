@@ -1,11 +1,13 @@
-from flask import render_template, session, redirect, request, flash, url_for
+from flask import render_template, session, redirect, request, flash, url_for, send_file
 from app import app, db
 from forms import LoginForm, AddTask, AddType, ReportForm
 from models import User, Task, Types
 import datetime
 import flask_login
+import csv
 from flask_login import login_required, logout_user
 
+header_list = ["Task ID","User ID","Type","Weekday","Start Day","Start Month","Start Year","End Day","End Month","End Year","Start Hour","Start Minute","Minutes Taken"]
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -20,16 +22,34 @@ def logout():
     logout_user()
     return redirect('/index')
 
+@app.route('/download_report')
+@login_required
+def download_report():
+    file_name = 'report.csv'
+    return send_file(file_name, as_attachment=True)
+
 @app.route("/report", methods=["GET", "POST"])
 def report():
     form = ReportForm()
     if form.validate_on_submit():
-        tasks_returned = Task.query.all()
-
+        if form.user.data == "000000":
+            all_tasks = Task.query.all()
+        if form.user.data != "000000":
+            all_tasks = Task.query.filter_by(user_id=form.user.data)
+        tasks_returned = []
+        for task in all_tasks:
+            if datetime.datetime(form.year_to.data, form.month_to.data, form.day_to.data) >= datetime.datetime(task.start_year, task.start_month, task.start_day) >= datetime.datetime(form.year_from.data, form.month_from.data, form.day_from.data):
+                tasks_returned.append(task)
         task_list = []
         for task in tasks_returned:
             task_attributes=[task.id, task.user_id, task.type_label,task.start_weekday, task.start_day, task.start_month, task.start_year, task.end_day, task.end_month, task.end_year, task.start_hour, task.start_minute, task.time_taken]
             task_list.append(task_attributes)
+        with open('app/report.csv', 'wb') as test_file:
+            file_writer = csv.writer(test_file)
+            file_writer.writerow(header_list)
+            for task in task_list:
+                file_writer.writerow(task)
+
         return render_template("generated_report.html", task_list=task_list, tasks_returned=tasks_returned)
     return render_template("report.html", form=form)
 
@@ -83,7 +103,7 @@ def index():
     all_tasks = Task.query.all()
     start_hour = 0
     start_minute = 0
-    if len(all_tasks) > 0:
+    if len(all_tasks) > 0 and (not flask_login.current_user.is_anonymous()):
         #task_no = len(all_tasks) - 1
         all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
         task_no = len(all_tasks_user)
