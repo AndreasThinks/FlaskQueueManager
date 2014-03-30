@@ -1,3 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #444;
+  text-align:center;
+}
+
+body table {
+    margin: 0 auto;
+
+}
+
 #intro_bar div{
 display: inline-block;
 }
@@ -9,13 +22,7 @@ display: inline-block;
     margin: 0;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #444;
-  text-align:center;
-}
+
 
 #logo{
   padding: 20px;
@@ -26,6 +33,9 @@ body {
 display: inline-block;
 padding:10px;
 }
+
+
+
 
 #page_content div{
     display: inline-block;
