@@ -226,6 +226,9 @@ def index():
             start_minute = str(previous_task.end_minute)
             if len(start_minute) == 1:
                 start_minute = "0" + start_minute
+        else:
+            task_no = None
+            task_no_type = None
     else:
         task_no = None
         task_no_type = None
