@@ -1,7 +1,7 @@
 from app import db
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.String, primary_key = True)
     password = db.Column(db.String(10))
     tasks = db.relationship('Task', backref = 'creator', lazy = 'dynamic')
     role = db.Column(db.Integer)
