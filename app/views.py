@@ -18,7 +18,7 @@ login_manager.init_app(app)
 def load_user(userid):
     return User.query.get(userid)
 
-@app.route("/admin_tools")
+@app.route("/admin_tools", methods=["GET", "POST"])
 @login_required
 def admin_tools():
     current_user = flask_login.current_user
@@ -34,6 +34,17 @@ def admin_tools():
     for user in users:
         user_stats = [user.id, user.password, user.role]
         user_list.append(user_stats)
+    if form.validate_on_submit() and form.confirm.data == "CONFIRM":
+        for task in Task.query.all():
+            db.session.delete(task)
+            db.session.commit()
+        for task in User.query.all():
+            db.session.delete(task)
+            db.session.commit()
+        for type in Types.query.all():
+            db.session.delete(type)
+            db.session.commit()
+        return redirect('')
     return render_template("admin_tools.html", form=form, users=user_list,anonymous=current_user.is_anonymous(), current_user=current_user,
         is_admin = is_admin)
 
@@ -200,7 +211,8 @@ def index():
     all_tasks = Task.query.all()
     start_hour = 0
     start_minute = 0
-    if len(all_tasks) > 0 and (not flask_login.current_user.is_anonymous()):
+    all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
+    if len(all_tasks_user) > 1 and (not flask_login.current_user.is_anonymous()):
         #task_no = len(all_tasks) - 1
         all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
         task_no = len(all_tasks_user)
