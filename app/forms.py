@@ -27,8 +27,23 @@ class ReportForm(Form):
     day_to = IntegerField('Day From', validators = [Required()])
     month_to = IntegerField('Day From', validators = [Required()])
     year_to = IntegerField('Day From', validators = [Required()])
-    user = IntegerField('User')
+    user = TextField('User')
 
     def __init__(self, *args, **kwargs):
         kwargs['csrf_enabled'] = False
         super(ReportForm, self).__init__(*args, **kwargs)
+
+class ResetDb(Form):
+    confirm = TextField('Confirm')
+
+    def __init__(self, *args, **kwargs):
+        kwargs['csrf_enabled'] = False
+        super(ResetDb, self).__init__(*args, **kwargs)
+
+class PasswordChange(Form):
+    first = TextField('Password', validators = [Required()])
+    confirm = TextField('Confirm', validators = [Required()])
+
+    def __init__(self, *args, **kwargs):
+        kwargs['csrf_enabled'] = False
+        super(PasswordChange, self).__init__(*args, **kwargs)

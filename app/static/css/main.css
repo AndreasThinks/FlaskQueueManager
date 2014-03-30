@@ -2,6 +2,12 @@
 display: inline-block;
 }
 
+#tasks_list {
+    width: 100%;
+
+    text-align: center;
+    margin: 0;
+}
 
 body {
   margin: 0;
@@ -41,11 +47,6 @@ div.task_type_button {
 }
 
 
-#tasks_list {
-    width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
 
 
 div.task_type a {
@@ -70,5 +71,22 @@ div.task_type {
 #intro_bar {
     background-color: #c2c0c2;
     font-variant: small-caps;
+}
+
+
+
+div.task_type_button {
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    color: #f5f4f7;
+    background-color: #3f2da3;
+}
+
+div.task_type_button a {
+    color: #ffffff;
+    font-variant: normal;
+    text-decoration: none;
+    font-size: 120%;
 }
 

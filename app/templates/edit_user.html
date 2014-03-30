@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<p>Edit User</p>
+        User id: {{user}}
+
+        <p id="password_change">
+            <form method="POST" name="PasswordChange">
+        Password:{{form.first(size=10)}}
+    <br>
+        Confirm:{{form.confirm(size=10)}}
+    <br><input type="submit" value="Change Password">
+
+
+        <p id="change_role">Current Role: {{role_label}}<br><a href={{url_for('change_role',user=user)}}>Change?</a></p>
+
+{% endblock %}

@@ -10,6 +10,9 @@
     <p><a href={{url_for('index')}}>Home</a></p>
     <p><a href={{url_for('types_admin')}}>Change Task Types</a></p>
     <p><a href={{url_for('report')}}>Generate Report</a></p>
+    {% if is_admin %}
+    <p><a href={{url_for('admin_tools')}}>Admin tools</a></p>
+    {% endif %}
     <p><a href={{url_for('logout')}}>Logout</a></p>
     <div id="user_box">{% if anonymous==False %}Current User: {{current_user.id}}
     {% else %}

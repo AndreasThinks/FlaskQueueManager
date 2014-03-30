@@ -1,6 +1,6 @@
 from flask import render_template, session, redirect, request, flash, url_for, send_file
 from app import app, db
-from forms import LoginForm, AddTask, AddType, ReportForm
+from forms import LoginForm, AddTask, AddType, ReportForm, ResetDb, PasswordChange
 from models import User, Task, Types
 import datetime
 import flask_login
@@ -12,9 +12,77 @@ header_list = ["Task ID","User ID","Type","Weekday","Start Day","Start Month","S
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+
+
 @login_manager.user_loader
 def load_user(userid):
     return User.query.get(userid)
+
+@app.route("/admin_tools")
+@login_required
+def admin_tools():
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
+    if is_admin == False:
+        return redirect('')
+    form = ResetDb()
+    users = User.query.all()
+    user_list = []
+    for user in users:
+        user_stats = [user.id, user.password, user.role]
+        user_list.append(user_stats)
+    return render_template("admin_tools.html", form=form, users=user_list,anonymous=current_user.is_anonymous(), current_user=current_user,
+        is_admin = is_admin)
+
+@app.route("/edit_user")
+@login_required
+def edit_user():
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
+    if is_admin == False:
+        return redirect('')
+    form = PasswordChange()
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
+    user = request.args.get("user")
+    role = User.query.get(user).role
+    if role == 0:
+        role_label = "basic"
+    if role == 1:
+        role_label = "admin"
+    return render_template("edit_user.html", form=form, user=user, anonymous=current_user.is_anonymous(), role=role, role_label=role_label, current_user=current_user,
+        is_admin = is_admin)
+
+
+@app.route("/change_role")
+@login_required
+def change_role():
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
+    if is_admin == False:
+        return redirect('')
+    if flask_login.current_user.role == 1:
+        user_id = request.args.get("user")
+        user = User.query.get(user_id)
+        if user.role == 0:
+            user_role = 1
+        if user.role == 1:
+            user_role = 0
+        user.role = user_role
+        db.session.commit()
+    return redirect('/admin_tools')
 
 @app.route("/logout")
 @login_required
@@ -29,8 +97,14 @@ def download_report():
     return send_file(file_name, as_attachment=True)
 
 @app.route("/report", methods=["GET", "POST"])
+@login_required
 def report():
     form = ReportForm()
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
     if form.validate_on_submit():
         if form.user.data == "000000":
             all_tasks = Task.query.all()
@@ -50,12 +124,19 @@ def report():
             for task in task_list:
                 file_writer.writerow(task)
 
-        return render_template("generated_report.html", task_list=task_list, tasks_returned=tasks_returned)
-    return render_template("report.html", form=form)
+        return render_template("generated_report.html", task_list=task_list, anonymous=current_user.is_anonymous(), user=form.user.data,tasks_returned=tasks_returned, current_user=current_user,
+        is_admin = is_admin)
+    return render_template("report.html", form=form, anonymous=current_user.is_anonymous(), current_user=current_user,
+        is_admin = is_admin)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = LoginForm()
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
@@ -64,11 +145,17 @@ def register():
         db.session.commit()
         flash("New User Registered")
         return redirect(url_for('index'))
-    return render_template("register.html", form=form)
+    return render_template("register.html", form=form, current_user=current_user,anonymous=current_user.is_anonymous(),
+        is_admin = is_admin)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
     user = flask_login.current_user
     if form.validate_on_submit():
         username = form.username.data
@@ -77,18 +164,28 @@ def login():
             flask_login.login_user(User.query.get(username))
             flash("Logged in successfully.")
             return redirect(url_for("index"))
-    return render_template("login.html", form=form, user=user)
+    return render_template("login.html", form=form, user=user, anonymous=current_user.is_anonymous(), current_user=current_user,
+        is_admin = is_admin)
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     all_users = User.query.all()
+    all_types = Types.query.all()
+    if all_types == [] or None:
+        pause = Types(type="Break", number=0)
+        db.session.add(pause)
+        db.session.commit()
     if all_users == [] or None:
         admin = User(id=222222, password='admin', role=1)
         db.session.add(admin)
         db.session.commit()
     form = AddTask()
     current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
     all_types = Types.query.all()
     task_types = []
     for item in all_types:
@@ -140,12 +237,14 @@ def index():
         form = form,
         task_types = task_types_dict,
         current_user=current_user,
+        is_admin = is_admin,
         anonymous=current_user.is_anonymous(),
         tasks = tasks,
         start_hour=start_hour,
         start_minute=start_minute)
 
 @app.route('/add_task', methods=['GET', 'POST'])
+@login_required
 def add_task():
     try:
         tasker = session['new_task']
@@ -200,10 +299,16 @@ def add_task_type():
     return redirect('/index')
 
 @app.route('/types_admin', methods=['GET', 'POST'])
+@login_required
 def types_admin():
     form = AddType()
     user = { 'nickname': 'Dan'}  # fake user
     all_types = Types.query.all()
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
     task_types = []
     for item in all_types:
         task_types.append(item.type)
@@ -215,11 +320,14 @@ def types_admin():
         return redirect('/types_admin')
 
     return render_template("types_admin.html",
+                           current_user=current_user,
+        is_admin = is_admin, anonymous=current_user.is_anonymous(),
                            task_types = task_types,
                            user = user,
                            form=form)
 
 @app.route('/remove_type', methods=['GET', 'POST'])
+@login_required
 def remove_type():
     type_to_rm = request.args.get("type")
     type_to_rm = Types.query.get(type_to_rm)

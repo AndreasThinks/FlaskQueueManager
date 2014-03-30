@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<p>Reset Database</p>
+
+<form method="POST" name="ResetDb">
+        Please type CONFIRM into the next field to reset the database: {{form.confirm(size=7)}}    <br> <input type="submit" value="Confirm">
+</form>
+
+<p>User Administration</p>
+
+        <div id="user_list">
+<table border="1" >
+<tr >
+<th >User ID</th><th >Role</th><th >Edit User</th>
+</tr>
+
+    {% for user in users %}
+<tr>
+<td>{{user[0]}}</td>
+    <td>{{user[2]}}</td>
+     <td><a href={{url_for('edit_user',user=user[0])}}>Edit User</a></td>
+</tr>
+    {% endfor %}
+
+</table>
+    </div>
+
+{% endblock %}
