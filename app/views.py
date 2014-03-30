@@ -197,6 +197,7 @@ def index():
         is_admin = False
     else:
         is_admin = current_user.role == 1
+        all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
     all_types = Types.query.all()
     task_types = []
     for item in all_types:
@@ -211,20 +212,20 @@ def index():
     all_tasks = Task.query.all()
     start_hour = 0
     start_minute = 0
-    all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
-    if len(all_tasks_user) > 1 and (not flask_login.current_user.is_anonymous()):
-        #task_no = len(all_tasks) - 1
-        all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
-        task_no = len(all_tasks_user)
-        task_no_type = all_tasks_user[-1].type_label
-        previous_no = int(len(all_tasks) - 2)
-        previous_task = Task.query.get(previous_no)
-        start_hour = str(previous_task.end_hour)
-        if len(start_hour) == 1:
-            start_hour = "0" + start_hour
-        start_minute = str(previous_task.end_minute)
-        if len(start_minute) == 1:
-            start_minute = "0" + start_minute
+    if not flask_login.current_user.is_anonymous():
+        if len(all_tasks_user) > 1:
+            #task_no = len(all_tasks) - 1
+            all_tasks_user = Task.query.filter_by(user_id=current_user.id).all()
+            task_no = len(all_tasks_user)
+            task_no_type = all_tasks_user[-1].type_label
+            previous_no = int(len(all_tasks) - 2)
+            previous_task = Task.query.get(previous_no)
+            start_hour = str(previous_task.end_hour)
+            if len(start_hour) == 1:
+                start_hour = "0" + start_hour
+            start_minute = str(previous_task.end_minute)
+            if len(start_minute) == 1:
+                start_minute = "0" + start_minute
     else:
         task_no = None
         task_no_type = None
