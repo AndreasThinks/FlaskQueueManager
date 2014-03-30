@@ -23,7 +23,7 @@ class User(db.Model):
 
 
 class Task(db.Model):
-    id = db.Column(db.String, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     type = db.Column(db.Integer)
     type_label = db.Column(db.String)
     user_id = db.Column(db.String(6), db.ForeignKey('user.id'))
