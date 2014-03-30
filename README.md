@@ -8,3 +8,5 @@ Anybody can register, and this allows you to edit the types of selectable tasks.
 You can hit the report option to get access to historical trends.  
 
 By default, the administrator account is 222222 and the password is admin
+
+A version of this is hosted on Heroku @ http://footfallanalyser.herokuapp.com/
