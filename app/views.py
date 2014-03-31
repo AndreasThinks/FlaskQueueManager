@@ -18,6 +18,7 @@ login_manager.init_app(app)
 def load_user(userid):
     return User.query.get(userid)
 
+
 @app.route("/admin_tools", methods=["GET", "POST"])
 @login_required
 def admin_tools():
@@ -47,6 +48,22 @@ def admin_tools():
         return redirect('')
     return render_template("admin_tools.html", form=form, users=user_list,anonymous=current_user.is_anonymous(), current_user=current_user,
         is_admin = is_admin)
+
+@app.route("/delete_user")
+@login_required
+def delete_user():
+    current_user = flask_login.current_user
+    if current_user.is_anonymous():
+        is_admin = False
+    else:
+        is_admin = current_user.role == 1
+    if is_admin == False:
+        return redirect('')
+    user_id = request.args.get("user")
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect('/admin_tools')
 
 @app.route("/edit_user")
 @login_required
@@ -294,18 +311,20 @@ def add_task_type():
         previous_task.end_hour = current_time.hour
         previous_task.end_month = current_time.month
         previous_task.end_year = current_time.year
-        if previous_task.end_day != current_time.day:
-            if 0 == current_time.hour - 1:
-                previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute
-            else:
-                previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute + (60 * ((current_time.hour - previous_task.start_hour) - 1))
-        if previous_task.end_day == current_time.day:
-            if previous_task.start_hour == current_time.hour:
-                previous_task.time_taken = current_time.minute - previous_task.start_minute
-            elif previous_task.start_hour == current_time.hour - 1:
-                previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute
-            else:
-                previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute + (60 * ((current_time.hour - previous_task.start_hour) - 1))
+        previous_delta = datetime.datetime(previous_task.end_year, previous_task.end_month, previous_task.end_day, previous_task.end_hour, previous_task.end_minute) - datetime.datetime(previous_task.start_year, previous_task.start_month, previous_task.start_day, previous_task.start_hour, previous_task.start_minute)
+        previous_task.time_taken = previous_delta.seconds // 60
+        #if previous_task.end_day != current_time.day:
+         #   if 0 == current_time.hour - 1:
+          #      previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute
+           # else:
+            #    previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute + (60 * ((current_time.hour - previous_task.start_hour) - 1))
+        #if previous_task.end_day == current_time.day:
+         #   if previous_task.start_hour == current_time.hour:
+          #      previous_task.time_taken = current_time.minute - previous_task.start_minute
+           # elif previous_task.start_hour == current_time.hour - 1:
+            #    previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute
+          #  else:
+           #     previous_task.time_taken = (60 - previous_task.start_minute) + current_time.minute + (60 * ((current_time.hour - previous_task.start_hour) - 1))
         db.session.add(previous_task)
 
         #previous_task.end_time = Task(end_day=current_time.day, end_month=current_time.month, end_year=current_time.year, end_minute=current_time.minute
