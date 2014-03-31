@@ -100,3 +100,26 @@ div.task_type_button a {
     font-size: 120%;
 }
 
+#intro_bar {
+    width: 90%;
+    -webkit-border-bottom-right-radius: 30px;
+    -webkit-border-bottom-left-radius: 30px;
+    -moz-border-radius-bottomright: 30px;
+    -moz-border-radius-bottomleft: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-left: auto;
+    -moz-box-shadow:    0px 3px 13px 3px #B8C1F5;
+    -webkit-box-shadow: 0px 3px 13px 3px #B8C1F5;
+    box-shadow:         0px 3px 13px 3px #B8C1F5;
+}
+
+#tasks_list {
+    width: 90;
+    margin: 0 15 auto;
+    margin-left: 0;
+}
+
